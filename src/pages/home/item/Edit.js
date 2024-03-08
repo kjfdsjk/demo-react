@@ -1,50 +1,38 @@
 import React, { useEffect } from 'react';
-import axios from 'axios';
-import { Formik, Form, Field } from "formik";
-import { useNavigate, useParams } from "react-router";
+import { Formik, Form, Field } from 'formik';
+import { useNavigate, useParams } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
+import {edit, getBlogs} from '../../../services/ItemService';
 
 export default function Edit() {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const { id } = useParams();
+    let st = useSelector(state => {
+        return state.blogs.blogs.data.filter(i => i.id == id);
+    })
 
-    useEffect(() => {
-        axios.get(`http://localhost:8080/students/${id}`)
-            .then((res) => {
-                const { name, description, score, action } = res.data;
-                setInitialValues({ name, description, score, action });
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }, [id]);
-
-    const [initialValues, setInitialValues] = React.useState({
-        name: '',
-        description: '',
-        score: '',
-        action: ''
-    });
+    let handleEdit = async (id, values) => {
+        await dispatch(edit({id, values}))
+    }
 
     return (
         <Formik
-            initialValues={initialValues}
+            initialValues={st[0]}
             onSubmit={(values) => {
-                axios.put(`http://localhost:8080/students/${id}`, values)
-                    .then(() => {
-                        alert('Thành công');
-                        navigate('/');
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                    });
+                handleEdit(values).then(() => {
+                    navigate('/home');
+                });
             }}
         >
             <Form>
-                <Field name='name' />
-                <Field name='description' />
-                <Field name='score' />
-                <Field name='action' />
-                <button type='submit'>Update</button>
+                <Field type="text" name="title" placeholder="title" />
+                <Field type="text" name="content" placeholder="content" />
+                <Field type="text" name="status" placeholder="status" />
+                <Field type="number" name="likeCount" placeholder="likeCount" />
+                <button type="submit" className="btn btn-primary">
+                    Submit
+                </button>
             </Form>
         </Formik>
     );

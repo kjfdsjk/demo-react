@@ -6,8 +6,12 @@ import Home from "./pages/home/Home";
 import Create from "./pages/home/item/Create";
 import Edit from "./pages/home/item/Edit";
 import List from "./pages/home/item/List";
+import {useDispatch, useSelector} from "react-redux";
+import {useEffect} from "react";
+import {getStudents} from "./services/ItemService";
 
 function App() {
+
     return (
         <div className={'container-fluid'}>
             <Routes>
@@ -16,7 +20,7 @@ function App() {
                 <Route path={'home'} element={<Home/>}>
                     <Route path={''} element={<List/>}></Route>
                     <Route path={'create'} element={<Create/>}></Route>
-                    <Route path={'edit'} element={<Edit/>}></Route>
+                    <Route path={'edit/:id'} element={<Edit/>}></Route>
                 </Route>
             </Routes>
         </div>

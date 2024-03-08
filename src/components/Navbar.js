@@ -1,6 +1,23 @@
 import {Link} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {useEffect} from "react";
+import {getBlogs} from "../services/ItemService";
+import {useNavigate} from "react-router";
 
 export default function Navbar() {
+    let navigate = useNavigate();
+    const dispatch = useDispatch();
+    const user = useSelector(state => {
+        console.log(state)
+        return state.users.currentUser
+    });
+    useEffect(() => {
+        dispatch(getBlogs());
+    }, []);
+    const handleLogout = () => {
+        localStorage.clear();
+        navigate('/')
+    }
     return (
         <div className={'row'}>
             <div className={'col-12'}>
@@ -21,6 +38,10 @@ export default function Navbar() {
                                     <Link className="nav-link" to={'create'}>Create</Link>
                                 </li>
                             </ul>
+                            <div className="form-inline my-2 my-lg-0">
+                                {user.username}
+                                    <button className="ml-2 btn btn-outline-danger my-2 my-sm-0" type="submit" onClick={handleLogout}>Logout</button>
+                            </div>
                         </div>
                     </div>
                 </nav>

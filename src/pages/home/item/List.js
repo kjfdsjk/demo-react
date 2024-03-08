@@ -1,68 +1,54 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
+import React, {useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {getBlogs} from "../../../services/ItemService";
+import {useNavigate} from "react-router";
+import {Link} from "react-router-dom";
 
 export default function List() {
-    const [list, setList] = useState([]);
+    const dispatch = useDispatch();
+    const blogs = useSelector(state => state.blogs.blogs.data);
 
     useEffect(() => {
-        loadList();
-    }, []);
+        dispatch(getBlogs());
+    }, [dispatch]);
 
-    const loadList = () => {
-        axios.get('http://localhost:8080/students')
-            .then((res) => setList(res.data))
-            .catch((error) => console.error("Error loading list:", error));
-    };
-
-    const handleEditClick = (itemId) => {
-        axios.get(`http://localhost:8080/students/${itemId}`)
-            .then((res) => console.log("Item for edit:", res.data))
-            .catch((error) => console.error("Error loading item for edit:", error));
-    };
-
-    const handleDeleteClick = (itemId) => {
-        axios.delete(`http://localhost:8080/students/${itemId}`)
-            .then(loadList)
-            .catch((error) => console.error("Error deleting item:", error));
-    };
 
     return (
-        <>
-            <div className={'row'}>
-                <div className={'col-12'}>
-                    <table className="table">
-                        <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">Score</th>
-                            <th scope="col">Action</th>
-                            <th scope="col">Action</th>
+        <div className="row">
+            <div className="col-12">
+                <table className="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Content</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">LikeCount</th>
+                        <th scope="col">User</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {blogs && blogs.map((item, index) => (
+                        <tr key={item.id}>
+                            <td>{index + 1}</td>
+                            <td>{item.title}</td>
+                            <td>{item.content}</td>
+                            <td>{item.status}</td>
+                            <td>{item.likeCount}</td>
+                            <td>{item.user.username}</td>
+                            <td>
+                                <button>
+                                    <Link to={`edit/${item.id}`}>
+                                        Edit
+                                    </Link>
+                                </button>
+                            </td>
                         </tr>
-                        </thead>
-                        <tbody>
-                        {list.map((item, index) => (
-                            <tr key={item.id}>
-                                <td>{index + 1}</td>
-                                <td>{item.name}</td>
-                                <td>{item.description}</td>
-                                <td>{item.score}</td>
-                                <td>
-                                    <button onClick={() => handleEditClick(item.id)}>
-                                        <Link to={`/edit/${item.id}`}>Edit</Link>
-                                    </button>
-                                </td>
-                                <td>
-                                    <button onClick={() => handleDeleteClick(item.id)}>Delete</button>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                </div>
+                    ))}
+                    </tbody>
+                </table>
             </div>
-        </>
+        </div>
     );
 }

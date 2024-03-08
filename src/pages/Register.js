@@ -16,7 +16,7 @@ export default function Register() {
                         <input type={'password'} className={'form-control'}/>
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="exampleInputPassword1" className="form-label">Submit password</label>
+                        <label htmlFor="exampleInputPassword1" className="form-label">Confirm password</label>
                         <input type={'password'} className={'form-control'}/>
                     </div>
                     <button type="button" className="btn btn-primary" onClick={()=>{
